@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI基金投资报告中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .status.connected {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn.primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background: #45a049;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .date-list {
+            list-style: none;
+        }
+
+        .date-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .date-item:hover {
+            background: #f5f5f5;
+            border-color: #ddd;
+        }
+
+        .date-item.active {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #1976d2;
+        }
+
+        .report-count {
+            font-size: 0.9em;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .content-area {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            min-height: 600px;
+        }
+
+        .report-list {
+            display: none;
+        }
+
+        .report-list.active {
+            display: block;
+        }
+
+        .report-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .report-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .report-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .report-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-preview {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .report-preview.active {
+            display: block;
+        }
+
+        .report-content {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .report-content h1,
+        .report-content h2,
+        .report-content h3 {
+            margin: 20px 0 10px 0;
+            color: #2c3e50;
+        }
+
+        .report-content h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .report-content ul {
+            margin: 10px 0 10px 20px;
+        }
+
+        .report-content pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 200px;
+                justify-content: center;
+            }
+        }
+
+        .server-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .server-info h4 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .server-info p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI基金投资报告中心</h1>
+            <div class="status" id="status">
+                ⚪ 连接服务器中...
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="dateBtn">📅 按日期浏览</button>
+            <button class="btn primary" id="refreshBtn">🔄 刷新</button>
+            <button class="btn" id="previewBtn">📄 报告预览</button>
+            <button class="btn" id="serverBtn">🖥️ 服务器信息</button>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>📅 按日期浏览</h3>
+                <ul class="date-list" id="dateList">
+                    <li class="loading active">正在加载日期列表...</li>
+                </ul>
+            </div>
+
+            <div class="content-area">
+                <div id="welcomeContent">
+                    <h2>欢迎使用AI基金投资报告中心</h2>
+                    <p>请从左侧选择日期查看相应的投资报告。</p>
+                    <div class="loading active">正在加载报告数据...</div>
+                </div>
+                
+                <!-- 报告列表将在这里动态生成 -->
+            </div>
+        </div>
+
+        <div class="footer">
+            ⚠️ 仅供娱乐 · 不负任何责任 ⚠️
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal" id="dateModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('dateModal')">×</button>
+            <h3>📅 按日期浏览</h3>
+            <div id="dateModalContent">
+                <!-- 日期内容 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('previewModal')">×</button>
+            <h3>📄 报告预览</h3>
+            <div id="previewModalContent">
+                <!-- 预览内容 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="serverModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('serverModal')">×</button>
+            <h3>🖥️ 服务器信息</h3>
+            <div class="server-info">
+                <h4>服务器状态</h4>
+                <p>状态: <span id="serverStatus">运行中</span></p>
+                <p>报告总数: <span id="reportCount">-</span></p>
+                <p>最后更新: <span id="lastUpdate">-</span></p>
+                <p>服务器时间: <span id="serverTime">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
