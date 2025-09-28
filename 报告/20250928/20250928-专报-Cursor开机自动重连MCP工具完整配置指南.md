@@ -252,7 +252,7 @@ class MCPAutoMonitor:
                 # 更新状态文件
                 self.update_status()
                 
-                # 等待下次检查
+                # 等待下次检查  
                 time.sleep(self.check_interval)
                 
             except KeyboardInterrupt:
