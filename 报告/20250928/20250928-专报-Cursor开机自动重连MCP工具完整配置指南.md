@@ -127,9 +127,9 @@ class MCPAutoMonitor:
         }
         
         # 运行配置
-        self.check_interval = 10  # 10秒检查一次
+        self.check_interval = 2   # 2秒检查一次
         self.max_retries = 5      # 最大重试次数
-        self.retry_delay = 10     # 重试延迟10秒
+        self.retry_delay = 2      # 重试延迟2秒
         self.retry_count = {}     # 重试计数器
         
         # 创建状态文件
@@ -396,7 +396,7 @@ C:\Users\ZEN\Desktop\X1基金\
    ↓
 4. 自动检查并启动yingmi、caixin、Tavily三个MCP工具
    ↓
-5. 进入监控循环，每10秒检查一次
+5. 进入监控循环，每2秒检查一次
    ↓
 6. 如果检测到掉线，自动重连（最多重试5次）
 ```
