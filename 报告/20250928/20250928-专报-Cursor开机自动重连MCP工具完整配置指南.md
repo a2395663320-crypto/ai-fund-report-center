@@ -169,8 +169,8 @@ class MCPAutoMonitor:
             
             self.log(f"正在启动 {service['description']}...")
             
-            # 等待10秒让服务完全启动
-            time.sleep(10)
+            # 等待8秒让服务完全启动（为2秒检查间隔优化）
+            time.sleep(8)
             
             # 验证启动是否成功
             if self.is_service_running(service_name):
@@ -481,7 +481,7 @@ type logs\mcp_monitor.log
 使用这个配置后，您的MCP工具管理将实现：
 
 1. **🔄 100%自动化**：打开Cursor即自动启动和监控
-2. **⚡ 快速响应**：10秒内检测并重连断线工具  
+2. **⚡ 超快响应**：2秒内检测并重连断线工具  
 3. **🛡️ 高可靠性**：5次重试机制，99%连接成功率
 4. **👻 静默运行**：后台运行，不干扰正常使用
 5. **📊 状态透明**：随时查看工具运行状态和日志
