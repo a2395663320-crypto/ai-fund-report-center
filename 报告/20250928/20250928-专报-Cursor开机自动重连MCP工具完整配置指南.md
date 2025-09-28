@@ -127,9 +127,9 @@ class MCPAutoMonitor:
         }
         
         # 运行配置
-        self.check_interval = 30  # 30秒检查一次
+        self.check_interval = 10  # 10秒检查一次
         self.max_retries = 5      # 最大重试次数
-        self.retry_delay = 30     # 重试延迟30秒
+        self.retry_delay = 10     # 重试延迟10秒
         self.retry_count = {}     # 重试计数器
         
         # 创建状态文件
